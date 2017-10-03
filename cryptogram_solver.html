@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Cryptogram Solver by Matt Nutsch</title>
+	
+<script type="text/javascript">
+/**********************************************************************
+* Name: function isLetter(str) 
+* Date Created: 9-28-2017
+* Description:
+* This is a helper function to check if a char is a letter.
+* source: https://stackoverflow.com/questions/9862761/how-to-check-if-character-is-a-letter-in-javascript
+*
+**********************************************************************/
+function isLetter(str) 
+{
+  return str.length === 1 && str.match(/[a-z]/i);
+}
+
+/**********************************************************************
+* Name: function analyzeCryptogram()
+* Date Created: 9-28-2017
+* Description:
+* This function will analyze the cryptogram and suggest letter combinations
+* to solve it. 
+*
+**********************************************************************/
+function analyzeMessage()
+{
+	console.log("analyzeCryptogram function called.");
+	
+	//init variables
+	console.log("Initializing variables...");
+	
+	var encryptedMessage = document.getElementById('encryptedMessage');
+	var uppercaseEncryptedText = "";
+	var analysisMessage = ""; //string for displaying in the text area.
+	var analysisStatus = document.getElementById('analysisStatus'); //a span to display the status of analysis
+
+	var letterDecryptionPossibilities = []; //this is a 2D array to store possible substitutions of letters
+	var letterDecryptionPossibilitiesCount = [];
+	for (var i  = 0; i < 26; i++)
+	{
+		letterDecryptionPossibilities[i] = []; 	//init the 2D array as empty
+		letterDecryptionPossibilitiesCount[i] = 0; //init the count of each row as 0.
+	}
+	
+	analysisStatus.innerHTML = "Analyzing...";
+	
+	var letterArray = new Array(); //stores the characters in the alphabet
+	//set the values in the array of possible characters
+	letterArray[0] = "A";
+	letterArray[1] = "B";
+	letterArray[2] = "C";
+	letterArray[3] = "D";
+	letterArray[4] = "E";
+	letterArray[5] = "F";
+	letterArray[6] = "G";
+	letterArray[7] = "H";
+	letterArray[8] = "I";
+	letterArray[9] = "J";
+	letterArray[10] = "K";
+	letterArray[11] = "L";
+	letterArray[12] = "M";
+	letterArray[13] = "N";
+	letterArray[14] = "O";
+	letterArray[15] = "P";
+	letterArray[16] = "Q";
+	letterArray[17] = "R";
+	letterArray[18] = "S";
+	letterArray[19] = "T";
+	letterArray[20] = "U";
+	letterArray[21] = "V";
+	letterArray[22] = "W";
+	letterArray[23] = "X";
+	letterArray[24] = "Y";
+	letterArray[25] = "Z";
+	
+	var letterCountArray = new Array(); //stores the count of each letter
+	for (i = 0; i < 26; i++) 
+	{
+		letterCountArray[i] = 0; //init array as zeros
+	}	 
+		
+	var sortedObjectArray = []; //stores the count of each letter sorted in descending order of frequency
+		
+	//convert characters to uppercase
+	console.log("Converting encrypted text to uppercase...");
+	uppercaseEncryptedText = encryptedMessage.innerHTML.toUpperCase();
+	
+	//count how often each letter appears
+	console.log("Counting the occurence of each letter...");
+	//loop through the array of encrypted text
+	for (j = 0; j < uppercaseEncryptedText.length; j++)
+	{
+		//compare this character against the available characters
+		for (i = 0; i < 26; i++) 
+		{
+			if(letterArray[i] == uppercaseEncryptedText[j])
+			{
+				letterCountArray[i]++;
+			}
+		}
+	}
+	//sort the arrays to show us which letters are the most frequent
+	//combine the arrays into an object array:
+	var tempObject;
+	for (i = 0; i < 26; i++) 
+	{
+		tempObject = {letters: letterArray[i], counts: letterCountArray[i]};
+		sortedObjectArray.push(tempObject);
+	}	 
+	//sort the object array
+	sortedObjectArray.sort(function(x,y) { return y.counts - x.counts }); //sort in descending order
+	//ETAOIN = the most common letters in the English language
+	//the most common letter is probably E
+	letterDecryptionPossibilities[4][letterDecryptionPossibilitiesCount[4]] = sortedObjectArray[0].letters//"E";
+	letterDecryptionPossibilitiesCount[4]++;
+	
+	//the second and third most common is probably T or A
+	letterDecryptionPossibilities[19][letterDecryptionPossibilitiesCount[19]] = sortedObjectArray[1].letters//"T";
+	letterDecryptionPossibilitiesCount[19]++;
+	letterDecryptionPossibilities[19][letterDecryptionPossibilitiesCount[19]] = sortedObjectArray[2].letters//"T";
+	letterDecryptionPossibilitiesCount[19]++;
+	letterDecryptionPossibilities[0][letterDecryptionPossibilitiesCount[0]] = sortedObjectArray[2].letters//"A";
+	letterDecryptionPossibilitiesCount[0]++;
+	letterDecryptionPossibilities[0][letterDecryptionPossibilitiesCount[0]] = sortedObjectArray[1].letters//"A";
+	letterDecryptionPossibilitiesCount[0]++;	
+	
+	//The fourth through fifth most common letters are probably O, I, or N
+	letterDecryptionPossibilities[13][letterDecryptionPossibilitiesCount[13]] = sortedObjectArray[3].letters//"O";
+	letterDecryptionPossibilitiesCount[13]++;
+	letterDecryptionPossibilities[13][letterDecryptionPossibilitiesCount[13]] = sortedObjectArray[4].letters//"O";
+	letterDecryptionPossibilitiesCount[13]++;
+	letterDecryptionPossibilities[13][letterDecryptionPossibilitiesCount[13]] = sortedObjectArray[5].letters//"O";
+	letterDecryptionPossibilitiesCount[13]++;
+	letterDecryptionPossibilities[8][letterDecryptionPossibilitiesCount[8]] = sortedObjectArray[3].letters//"I";
+	letterDecryptionPossibilitiesCount[8]++;
+	letterDecryptionPossibilities[8][letterDecryptionPossibilitiesCount[8]] = sortedObjectArray[4].letters//"I";
+	letterDecryptionPossibilitiesCount[8]++;
+	letterDecryptionPossibilities[8][letterDecryptionPossibilitiesCount[8]] = sortedObjectArray[5].letters//"I";
+	letterDecryptionPossibilitiesCount[8]++;
+	letterDecryptionPossibilities[14][letterDecryptionPossibilitiesCount[14]] = sortedObjectArray[3].letters//"N";
+	letterDecryptionPossibilitiesCount[14]++;
+	letterDecryptionPossibilities[14][letterDecryptionPossibilitiesCount[14]] = sortedObjectArray[4].letters//"N";
+	letterDecryptionPossibilitiesCount[14]++;
+	letterDecryptionPossibilities[14][letterDecryptionPossibilitiesCount[14]] = sortedObjectArray[5].letters//"N";
+	letterDecryptionPossibilitiesCount[14]++;
+	
+	//output the frequency of each letter
+	/*
+	analysisMessage = "This is the frequency of each letter in the encrypted message:\n\n";
+	for (i = 0; i < 26; i++) 
+	{
+		analysisMessage = analysisMessage + sortedObjectArray[i].letters + ": " + sortedObjectArray[i].counts + "\n";
+	}
+	analysisMessage = analysisMessage + "\n\n";
+	*/
+		
+	//output the letter suggestions
+	analysisMessage = analysisMessage + "These are the possible letters based on frequency analysis:\n\n";
+	analysisMessage = analysisMessage + "Unencrypted Letter: Possible Encrypted Matches...\n";
+	for (i = 0; i < 26; i++) 
+	{
+		//console.log("letterDecryptionPossibilitiesCount[" + i + "] = " + letterDecryptionPossibilitiesCount[i]);
+		analysisMessage = analysisMessage + letterArray[i] + ": ";
+		for (k = 0; k < letterDecryptionPossibilitiesCount[i]; k++)
+		{
+			console.log("Adding the letterDecryptionPossibilities for location " + i + ", " + k);
+			analysisMessage = analysisMessage + letterDecryptionPossibilities[i][k] + " ";
+		}
+		analysisMessage = analysisMessage + "\n";
+	}	 
+
+	analysis.innerHTML = analysisMessage;
+	analysisStatus.innerHTML = "Analysis complete.";
+
+	
+}
+
+/**********************************************************************
+* Name: function decryptMessage()
+* Date Created: 9-28-2017
+* Description:
+* This function will analyze the encrypted message and then decrypt it. 
+*
+**********************************************************************/
+function decryptMessage()
+{
+	console.log("decryptMessage function is running...");
+
+	//init variables
+	var letterDecryptionObjectArray = []; //stores an array of objects containing decrypted-encrypted letter pairs
+	var tempObject; 
+	var tempString;
+	var encryptedMessage = document.getElementById('encryptedMessage'); //a text area
+	var decryptedMessage = document.getElementById('decryptedMessage'); //a text area
+	var uppercaseEncryptedText = ""; //string containing an uppercase version of the encrypted message
+	var decipheredMessageString = ""; //string containing the deciphered message
+	var decryptionStatus = document.getElementById('decryptionStatus'); //a span to display the status of analysis
+
+	decryptionStatus.innerHTML = "Decrypting...";
+
+	//set up the array of letter pairs
+	//Letter A
+	tempString = document.getElementById("letterA").value;
+	tempObject = {decrypted: "A", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter B
+	tempString = document.getElementById("letterB").value;
+	tempObject = {decrypted: "B", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter C
+	tempString = document.getElementById("letterC").value;
+	tempObject = {decrypted: "C", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter D
+	tempString = document.getElementById("letterD").value;
+	tempObject = {decrypted: "D", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter E
+	tempString = document.getElementById("letterE").value;
+	tempObject = {decrypted: "E", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter F
+	tempString = document.getElementById("letterF").value;
+	tempObject = {decrypted: "F", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter G
+	tempString = document.getElementById("letterG").value;
+	tempObject = {decrypted: "G", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter H
+	tempString = document.getElementById("letterH").value;
+	tempObject = {decrypted: "H", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter I
+	tempString = document.getElementById("letterI").value;
+	tempObject = {decrypted: "I", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter J
+	tempString = document.getElementById("letterJ").value;
+	tempObject = {decrypted: "J", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter K
+	tempString = document.getElementById("letterK").value;
+	tempObject = {decrypted: "K", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter L
+	tempString = document.getElementById("letterL").value;
+	tempObject = {decrypted: "L", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter M
+	tempString = document.getElementById("letterM").value;
+	tempObject = {decrypted: "M", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter N
+	tempString = document.getElementById("letterN").value;
+	tempObject = {decrypted: "N", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter O
+	tempString = document.getElementById("letterO").value;
+	tempObject = {decrypted: "O", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter P
+	tempString = document.getElementById("letterP").value;
+	tempObject = {decrypted: "P", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter Q
+	tempString = document.getElementById("letterQ").value;
+	tempObject = {decrypted: "Q", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter R
+	tempString = document.getElementById("letterR").value;
+	tempObject = {decrypted: "R", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter S
+	tempString = document.getElementById("letterS").value;
+	tempObject = {decrypted: "S", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter T
+	tempString = document.getElementById("letterT").value;
+	tempObject = {decrypted: "T", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter U
+	tempString = document.getElementById("letterU").value;
+	tempObject = {decrypted: "U", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter V 
+	tempString = document.getElementById("letterV").value;
+	tempObject = {decrypted: "V", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter W
+	tempString = document.getElementById("letterW").value;
+	tempObject = {decrypted: "W", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter X
+	tempString = document.getElementById("letterX").value;
+	tempObject = {decrypted: "X", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter Y
+	tempString = document.getElementById("letterY").value;
+	tempObject = {decrypted: "Y", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+	//Letter Z
+	tempString = document.getElementById("letterZ").value;
+	tempObject = {decrypted: "Z", encrypted: tempString};
+	letterDecryptionObjectArray.push(tempObject);
+		 
+	//convert the encrypted mesages to uppercase
+	console.log("Converting encrypted text to uppercase...");
+	uppercaseEncryptedText = encryptedMessage.innerHTML.toUpperCase();
+	
+	//decipher the message
+	console.log("Deciphering the message. Please wait...");
+	decryptionStatus.innerHTML = "Deciphering the message. Please wait...";
+	console.log("The encrypted text is " + uppercaseEncryptedText.length + " characters long.");
+	//loop through the array of encrypted text
+	var letterMatched = false;
+	var charCounter = 0;
+	for (j = 0; j < uppercaseEncryptedText.length; j++)
+	{
+		decryptionStatus.innerHTML = "Decrypting... " + (charCounter / uppercaseEncryptedText.length) + "% complete.";
+		//console.log("charCounter = " + charCounter);
+		if(isLetter(uppercaseEncryptedText[j])) //if this character is a letter
+		{			
+			//console.log("DEBUG: this is a letter.");
+			//compare this character against the available encrypted characters
+			letterMatched = false;
+			for (i = 0; i < 26; i++) 
+			{
+				if(letterDecryptionObjectArray[i].encrypted == uppercaseEncryptedText[j]) //if we find a match
+				{
+					decipheredMessageString = decipheredMessageString + letterDecryptionObjectArray[i].decrypted; //the change the character to it's deciphered version
+					letterMatched = true;
+				}
+			}
+			if(letterMatched == false) //if this wasn't a character we are evaluating
+			{
+				decipheredMessageString = decipheredMessageString + uppercaseEncryptedText[j]; //then keep the character as is
+				//dev note: this part should never actually run
+			}
+		}
+		else
+		{
+			//console.log("DEBUG: this is not a letter.");
+			decipheredMessageString = decipheredMessageString + uppercaseEncryptedText[j]; //then keep the character as is
+		}
+		charCounter++;
+	}
+	
+	//console.log("DEBUG: decipheredMessageString = " + decipheredMessageString);
+	
+	//display the deciphered message
+	decryptedMessage.innerHTML = decipheredMessageString;
+	
+	decryptionStatus.innerHTML = "Decryption complete.";
+
+	
+}	
+
+/**********************************************************************
+* Name: function readFile()
+* Date Created: 9-28-2017
+* Description:
+* This function reads a text file on the client and loads it into the encrypted
+* message box.
+* based on: https://jsfiddle.net/k3j48zmt/
+*
+**********************************************************************/
+function readFile() 
+{
+	console.log("readFile function called.");
+
+ 	var file = document.getElementById('file').files[0];
+    var reader = new FileReader();
+	var encryptedMessage = document.getElementById('encryptedMessage'); //a text area
+	
+    reader.onload = function(event) 
+	{
+		//console.log(event.target.result);     
+		encryptedMessage.innerHTML = event.target.result;
+	}
+    reader.readAsText(file)
+}
+
+/**********************************************************************
+* Name: function downloadFile()
+* Date Created: 9-28-2017
+* Description:
+* This function opens a new tab with only the decrypted message text.
+*
+**********************************************************************/
+function downloadFile(filename, elId) 
+{
+	console.log("downloadFile function called.");
+	
+    var elHtml = document.getElementById(elId).innerHTML;
+	
+	var win = window.open("", "decryptedText.txt", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no");
+	win.document.body.innerHTML = elHtml;
+}
+</script>
+	
+</head>
+<body>
+<h1>Cryptogram Solver</h1>
+<h4>by Matt Nutsch</h4>
+This app will decipher a cryptogram, using letter substitution.<br/>
+<strong>Instructions:</strong>
+<ol>
+<li>Click on the Browse button to select and upload an encrypted file.</li>
+<li>Update the encrypted letters in the Decryption Key table.</li>
+<li>Click the Decrypt button to decipher the message.</li>
+<li>If you need hints on the Decryption Key, then click Analyze for suggestions based on an analysis of the encrypted text.</li>
+</ol>
+<br/>
+<hr>
+<strong>File Upload:</strong>
+Select a text file to load it into the "Encrypted Text" box: 
+<input type="file" id="file" name="file" enctype="multipart/form-data" onchange="readFile();"/>
+<br/>
+<br/>
+<strong>Encrypted Text:</strong><br/>
+<textarea id="encryptedMessage" name="encryptedMessage" rows="10" cols="80">
+JXN JLZYNMB QE LQSNQ ZRM VGTWNJ
+
+hb Dwttwzs Kxzunkpnzln
+
+
+
+Mlzszjwk Pnlkqrzn
+
+  Ixqlgk.
+
+
+  Nkiztgk, Plwrin qe Fnlqrz.
+
+  Pzlwk, z bqgry Iqgrj, uwrkszr jq jxn Plwrin.
+
+  Sqrjzygn, xnzmk qe jdq xqgknk zj fzlwzrin dwjx nzix qjxnl.
+
+  Izpgtnj, xnzmk qe jdq xqgknk zj fzlwzrin dwjx nzix qjxnl.
+
+  Zr qtm Szr, qe jxn Izpgtnj ezswtb.
+
+  Lqsnq, kqr jq Sqrjzygn.
+
+  Jbhztj, rnpxnd jq Tzmb Izpgtnj.
+
+  Snligjwq, uwrkszr jq jxn Plwrin zrm elwnrm jq Lqsnq.
+
+</textarea>
+<br/>
+<br/>
+
+<hr>
+
+<strong>Decryption Key</strong><br/>
+Unencrypted Letter: <input type="text" value="Encrypted Letter" disabled>
+<table>
+<tr>
+	<td>A: <input id="letterA" value ="Z" type="text" size="1" maxlength="1"></td>
+	<td>B: <input id="letterB" value ="H" type="text" size="1" maxlength="1"></td>
+	<td>C: <input id="letterC" value ="I" type="text" size="1" maxlength="1"></td>
+	<td>D: <input id="letterD" value ="M" type="text" size="1" maxlength="1"></td>
+	<td>E: <input id="letterE" value ="N" type="text" size="1" maxlength="1"></td>
+	<td>F: <input id="letterF" value ="E" type="text" size="1" maxlength="1"></td>
+</tr>
+<tr>
+	<td>G: <input id="letterG" value ="Y" type="text" size="1" maxlength="1"></td>
+	<td>H: <input id="letterH" value ="X" type="text" size="1" maxlength="1"></td>
+	<td>I: <input id="letterI" value ="W" type="text" size="1" maxlength="1"></td>
+	<td>J: <input id="letterJ" value ="V" type="text" size="1" maxlength="1"></td>
+	<td>K: <input id="letterK" value ="U" type="text" size="1" maxlength="1"></td>
+	<td>L: <input id="letterL" value ="T" type="text" size="1" maxlength="1"></td>
+</tr>
+<tr>
+	<td>M: <input id="letterM" value ="S" type="text" size="1" maxlength="1"></td>
+	<td>N: <input id="letterN" value ="R" type="text" size="1" maxlength="1"></td>
+	<td>O: <input id="letterO" value ="Q" type="text" size="1" maxlength="1"></td>
+	<td>P: <input id="letterP" value ="P" type="text" size="1" maxlength="1"></td>
+	<td>Q: <input id="letterQ" value ="O" type="text" size="1" maxlength="1"></td>
+	<td>R: <input id="letterR" value ="L" type="text" size="1" maxlength="1"></td>
+</tr>
+<tr>
+	<td>S: <input id="letterS" value ="K" type="text" size="1" maxlength="1"></td>
+	<td>T: <input id="letterT" value ="J" type="text" size="1" maxlength="1"></td>
+	<td>U: <input id="letterU" value ="G" type="text" size="1" maxlength="1"></td>
+	<td>V: <input id="letterV" value ="F" type="text" size="1" maxlength="1"></td>
+	<td>W: <input id="letterW" value ="D" type="text" size="1" maxlength="1"></td>
+	<td>X: <input id="letterX" value ="C" type="text" size="1" maxlength="1"></td>
+</tr>
+<tr>
+	<td>Y: <input id="letterY" value ="B" type="text" size="1" maxlength="1"></td>
+	<td>Z: <input id="letterZ" value ="A" type="text" size="1" maxlength="1"></td>
+	<td>
+	<td>
+	<td>
+</tr>
+</table>
+<br/>
+<br/>
+
+<hr>
+<button type="button" onclick="decryptMessage();">Decrypt</button><br/>
+<div id="decryptionStatus"></div>
+<br/>
+<strong>Decrypted Message:</strong><br/> 
+<textarea id="decryptedMessage" name="decryptedMessage" rows="10" cols="80">
+</textarea>
+<br/>
+<button type="button" onclick="downloadFile('decryptedMessage.txt', 'decryptedMessage');">Download</button><br/>
+<br/><br/>
+<hr>
+<button type="button" onclick="analyzeMessage();">Analyze</button> 
+<div id="analysisStatus"></div>
+<br/>
+<strong>Analysis:</strong><br/> 
+<textarea id="analysis" name="analysis" rows="10" cols="80">
+</textarea>
+
+</body>
+
+</html>
