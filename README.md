@@ -10,4 +10,4 @@ If the tool appears frozen after multiple uses, then it may be helpful to reload
 This tool was developed and tested using the Firefox browser version 55.0.3.
 
 Follow this link to view the tool in your browser:
-<a href="https://htmlpreview.github.io/?https://github.com/mnutsch/Cryptogram-Solver/blob/master/cryptogram_solver.html" target="_blank">https://htmlpreview.github.io/?https://github.com/mnutsch/Cryptogram-Solver/blob/master/cryptogram_solver.html</a>
+<a href="https://htmlpreview.github.io/?https://github.com/mnutsch/Cryptogram-Solver/blob/master/cryptogram_decoder.html" target="_blank">https://htmlpreview.github.io/?https://github.com/mnutsch/Cryptogram-Solver/blob/master/cryptogram_decoder.html</a>
