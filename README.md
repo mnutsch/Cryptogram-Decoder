@@ -1,4 +1,4 @@
-# Cryptogram-Solver
+# Cryptogram-Decoder
 This is a simple JavaScript application for deciphering cryptograms.
 
 You can upload an ecnrypted text file to the tool using HTML5, or by simply compying and pasting the text.
